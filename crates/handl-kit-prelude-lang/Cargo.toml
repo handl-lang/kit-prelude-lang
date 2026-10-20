@@ -1,0 +1,15 @@
+[package]
+name = "handl-kit-prelude-lang"
+version.workspace = true
+edition.workspace = true
+description = "The canonical eval-path Language as data — the YAML fragment set of the ADR-0044 §6 end state, split out of handl-kit-data-prelude (tooling fragments and kit manifests stay upstream)."
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+handl-language = { git = "https://github.com/handl-lang/kernel", branch = "main" }
+hnl-engine-transform = { git = "https://github.com/handl-lang/engine-transform", branch = "main" }
+handl-plugin-ext-diag = { git = "https://github.com/handl-lang/host", branch = "main" }
+serde_yaml = "0.9"
+# Serialized `Language` snapshot cache (see `language_from_yaml`).
+serde_json = "1"

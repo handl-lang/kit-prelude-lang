@@ -1,0 +1,48 @@
+[workspace]
+resolver = "3"
+members = ["crates/handl-kit-prelude-lang"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/handl-lang/kit-prelude-lang"
+
+# ADR-0128 §Resolution: local development resolves the platform crates from
+# the sibling `../host` checkout; without the checkout (or this block),
+# the git source is used. The git source must still resolve — before the
+# remote exists, point it at the local clone:
+#
+#   CARGO_NET_GIT_FETCH_WITH_CLI=true \
+#   GIT_CONFIG_COUNT=1 \
+#   GIT_CONFIG_KEY_0="url.file:///home/luis/GitHub/handl-lang/host.insteadOf" \
+#   GIT_CONFIG_VALUE_0="https://github.com/handl-lang/host" \
+#   cargo check --workspace
+
+
+
+[profile.dev]
+opt-level = 1
+
+[patch."https://github.com/handl-lang/engine"]
+hnl-engine = { path = "../engine" }
+
+[patch."https://github.com/handl-lang/engine-transform"]
+hnl-engine-transform = { path = "../engine-transform" }
+
+[patch."https://github.com/handl-lang/kernel"]
+handl-language = { path = "../kernel/crates/handl-language" }
+handl-value = { path = "../kernel/crates/handl-value" }
+handl-lib-bytes = { path = "../kernel/crates/bytes" }
+handl-lib-cmp = { path = "../kernel/crates/cmp" }
+handl-lib-combinators = { path = "../kernel/crates/combinators" }
+handl-lib-error = { path = "../kernel/crates/error" }
+handl-lib-mood = { path = "../kernel/crates/mood" }
+handl-lib-obj = { path = "../kernel/crates/obj" }
+handl-lib-ops = { path = "../kernel/crates/ops" }
+handl-lib-prim = { path = "../kernel/crates/prim" }
+handl-lib-prim-handl = { path = "../kernel/crates/prim-handl" }
+handl-lib-type = { path = "../kernel/crates/type" }
+
+[patch."https://github.com/handl-lang/host"]
+handl-plugin-ext-diag = { path = "../host/crates/plugin-ext-diag" }
