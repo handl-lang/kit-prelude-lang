@@ -706,25 +706,18 @@
     name: runtime_assert
     args: []
     source: Native
+# `type-annot` — `expr : T`. Agda-style erasure: the `annot` child is static
+# metadata owned by the typecheck engine (`type.type-annot` synthesizes it);
+# exec must NOT evaluate it — a generic application like `Result<T, E>` in
+# annotation position is not a runtime arrow. The subject evaluates under the
+# unextended environment (the annotation binds nothing at runtime).
 - id: eval.type-annot
   node_kind: type-annot
-  scheme: !Seq
-    fst: !Seq
-      fst: !Op
-        name: proj_child
-        args: []
-        source: Native
-        lit: 1
-      snd: !Op
-        name: extend_env
-        args: []
-        source: Native
-        lit: $payload
-    snd: !Op
-      name: proj_child
-      args: []
-      source: Native
-      lit: 0
+  scheme: !Op
+    name: proj_child
+    args: []
+    source: Native
+    lit: 0
 - id: eval.typeof
   node_kind: typeof
   scheme: !Op
