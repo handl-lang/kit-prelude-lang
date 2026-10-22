@@ -327,3 +327,27 @@
   pass: n_dim_opt
   node_kind: flow
   rule: !Native "n_dim_arrow_opt"
+
+# ---------------------------------------------------------------------------
+# `exec-erasure` pass (ADR-0154 §6): type-level positions erase at exec.
+#
+# Generalizes ADR-0151's `eval.type-annot` scheme-level erasure into a
+# transform pass that runs post-typecheck / pre-eval
+# (`handl-runtime::exec_erasure_pass::prepare_exec_artifact` + the
+# `artifact_lint` verification pass). `type-annot` — `expr : T` — rewrites
+# to its `subject` child (child 0 per `ast.type-annot`'s role layout); the
+# `annot` subtree is checker-owned static metadata (`type.type-annot` still
+# synthesizes it for the checker) and becomes an unreachable arena entry,
+# which `Ast::subtree` compaction then drops. `Replace` allocates no node —
+# the subject *is* the rewritten result.
+#
+# Languages declare further erasable kinds as `pass: exec-erasure` rules;
+# type-level content in *runnable* positions is not erased here — it is
+# live-but-stuck code the `artifact_lint` pass reports as a diagnostic
+# (ADR-0154 §6), never silently null.
+# ---------------------------------------------------------------------------
+- id: transform.exec-erasure.type-annot
+  pass: exec-erasure
+  node_kind: type-annot
+  rule: !Replace
+    path: [0]
