@@ -3105,3 +3105,26 @@
     name: synth_transport
     args: []
     source: Judgment
+# `cell_id` — `id2 x` is the identity 2-cell on `x` (`Hom(2, x, x)`).
+- id: type.cell_id
+  node_kind: cell_id
+  synth: !Op
+    name: synth_cell_id
+    args: []
+    source: Judgment
+# `cell_comp_v` — `a =>> b` vertical 2-cell composition; the same
+# `>>>[k]` globular boundary law at axis 2.
+- id: type.cell_comp_v
+  node_kind: cell_comp_v
+  synth: !Op
+    name: synth_cell_comp_v
+    args: []
+    source: Judgment
+# `cell_comp_h` — `a =>| b` horizontal (deep-axis) composition of
+# 2-cells: `Hom(2,f,g) ∘₀ Hom(2,f',g') → Hom(2,f∘₀f',g∘₀g')`.
+- id: type.cell_comp_h
+  node_kind: cell_comp_h
+  synth: !Op
+    name: synth_cell_comp_h
+    args: []
+    source: Judgment
