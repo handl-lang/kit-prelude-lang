@@ -5,9 +5,9 @@
 # `Scheme` kernel (the same `!Arr`/`!Seq`/`!First`/`!Choice`/`!Loop` tags as
 # `eval.yaml`) with `source: Judgment` for typecheck judgment ops.
 #
-# The interpreted `.hnl` typecheck model (`hnl-engine-typecheck-handl`,
-# registered by the canonical kit under the engine name `handl`) and this
-# crate's Rust bootstrap checker interpret these schemes. Judgment ops:
+# The NBE typecheck engine (`hnl-engine-typecheck-nbe`, registered by the
+# canonical kit under the engine name `nbe` per the kit's
+# `runtime.typecheck` declaration) interprets these schemes. Judgment ops:
 # `construct`, `match_type`, `synth_child`, `check_child`,
 # `eval_child`, `proj_child`, `unify`, `extend`, `lookup`, `lookup_var`,
 # `fresh_meta`, `solve_meta`, `quote`, `normalize`, `bind`, `result`,
@@ -2961,21 +2961,27 @@
 # removed from the language (no token, lexer rule, grammar row, AST shape,
 # eval scheme, or type rule). Bindings are plain `x = y` / `x :: y`.
 
+# `stmt.export` — records `(name, type)` into the module's signature
+# record `Sig_m` (phase-1 spec WS-B: a module typechecks to `Sig_m`).
+# `export x` records `x`'s Γ type; `export x :: expr` binds `x` first;
+# `export x: T ~> U` records the signature type.
 - id: type.stmt.export
   node_kind: stmt.export
   synth: !Op
-    name: construct
+    name: synth_export
     args: []
     source: Judgment
-    lit: type.unit
 
+# `stmt.import` — binds names into Γ from the imported module's signature
+# record `Sig_m`: `import m` binds `m : Sig_m` (the record); named imports
+# are field projections; `import * as m` binds `m : Sig_m`; `import *`
+# splices the record's fields. `resolve`/dynamic specs → `type.unknown`.
 - id: type.stmt.import
   node_kind: stmt.import
   synth: !Op
-    name: construct
+    name: synth_import
     args: []
     source: Judgment
-    lit: type.unit
 
 # ---------------------------------------------------------------------------
 # Misc
