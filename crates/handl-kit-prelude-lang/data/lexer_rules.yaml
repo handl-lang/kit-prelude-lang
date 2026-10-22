@@ -402,6 +402,19 @@
   pattern: !Literal
     text: where
   priority: 15
+# `J` — the J eliminator keyword (ADR-0120): `J path, motive, base`
+# parses through `grammar.j.prefix` into a `j` node for the `synth_j`
+# judgment. The CAPITAL spelling is deliberate: `j` is a live
+# identifier in existing sources (loop indices in lib-desugar,
+# lib-noise, lib-str, …), so reserving the lowercase word would break
+# them; `J` is conventionally the eliminator's name and is unused as an
+# identifier. The standard word boundaries apply — `JSON`, `{J: x}`,
+# `x.J` stay identifiers.
+- id: lex.keyword.j
+  token_kind: token.keyword.j
+  pattern: !Literal
+    text: "J"
+  priority: 15
 - id: lex.lbrace
   token_kind: token.lbrace
   pattern: !Literal
