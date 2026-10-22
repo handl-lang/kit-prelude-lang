@@ -2047,13 +2047,21 @@
         lit: 0
     source: Judgment
 
-# `call` — synth the callee (child 0) → type.function{param, body}, check
-# the arg (child 1) against the function's `param` type, then return the
-# function's `body` type. Uses `type_field` to extract `param`/`body` from
-# the function type value (ADR-0054 legacy migration).
+# `call` — curried application (ADR-0152): the callee synthesizes a
+# `type.function`/`type.pi`/`type.ctor_sig` chain; each argument child is
+# checked against the current domain, producing the codomain for the next
+# step. Dependent application threads the argument *term* through the
+# callee's `body_closure`; a declared family applied in term position
+# produces `type.family_app`. Implemented as the `synth_call` judgment op
+# (the scheme vocabulary cannot iterate the remaining argument children
+# nor thread index terms through closures).
 - id: type.call
   node_kind: call
-  synth: !Seq
+  synth: !Op
+    name: synth_call
+    args: []
+    source: Judgment
+  check: !Seq
     fst: !Op
       name: synth_child
       args: []
@@ -2272,12 +2280,16 @@
     source: Judgment
     lit: type.string
 
-# `assign` — assignment is a statement with side effects, returns unit
-# (ADR-0054 legacy migration).
+# `assign` — assignment is a statement with side effects, returns unit.
+# The `synth_assign` judgment binds the target in Γ, synthesizes the
+# value, and checks it against the `type-annot` annotation when present —
+# the previous bare `construct type.unit` never evaluated the assign's
+# children, so a last-position `x : T = v` went unchecked (ADR-0120
+# dependent programs are `block`s of annotated top-level statements).
 - id: type.assign
   node_kind: assign
   synth: !Op
-    name: construct
+    name: synth_assign
     args: []
     source: Judgment
     lit: type.unit
