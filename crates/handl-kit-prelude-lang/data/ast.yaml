@@ -370,6 +370,31 @@
       - callee
       - args
     type: object
+# `callv` — leaf splat-call (ADR-0155 Phase 0). Internal-only node kind:
+# no grammar or lexer fragment produces it — it exists so a minted
+# wrapper-arrow body (`wrap_dep_fn`, `plugin-lib-handl`) can forward an
+# *evaluated* args array to `call_host` without `proj_rest` re-packing.
+# Children: `[callee, args]` — the `callee` child evaluates to the
+# qualified host-function name (typically a `lit` `"mod.fn"` payload);
+# the `args` child evaluates to the argument array itself (a
+# `rest`-bound `var`), not a per-element splat like `call`'s variadic
+# `args`.
+- id: ast.callv
+  node_kind: callv
+  children:
+    - role: callee
+    - role: args
+  payload_schema:
+    properties:
+      children:
+        items:
+          type: integer
+        maxItems: 2
+        minItems: 2
+        type: array
+    required:
+      - children
+    type: object
 # `index_app` — index-argument application `F{i, j, …}` (phase-2 WS-C
 # surface sugar). The canonical surface writes the braces **adjacent** to a
 # name-like target (`Vec{n, a}`, `head{n, a}`) so they are distinguishable
