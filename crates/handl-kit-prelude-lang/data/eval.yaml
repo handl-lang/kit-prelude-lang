@@ -1319,6 +1319,26 @@
         source: Native
         lit: 1
     source: Native
+# `j` — the J eliminator for `Path` 2-cells: `J p, motive, base`
+# (children `path`/`motive`/`base`). Runtime iota: `J` computes on a
+# canonical `refl` witness to the motive's base case — every runtime
+# path is a proof cell (proof-typed nodes are rewritten to `erased` by
+# the ADR-0032 erase pass), so the eliminator reduces to `base`
+# unconditionally, the same proof-erasure reading `transport` uses (its
+# native op ignores the path operand and returns the value). The `path`
+# and `motive` children are static metadata — the path may be an
+# `eq_<name>` witness with no runtime binding — so only `base` is
+# evaluated. A `j` reaching eval that does *not* denote a decided refl
+# case is the stuck-proof-cell situation `artifact.type-level-node`
+# exists to report upstream; the scheme is the runtime backstop for the
+# decided iota.
+- id: eval.j
+  node_kind: j
+  scheme: !Op
+    name: proj_child
+    args: []
+    source: Native
+    lit: 2
 # ---------------------------------------------------------------------------
 # Option B frontier cells — derived forms over `Seq{axis}` (ADR-0119 §7,
 # ADR-0120 Phase 5). There are no `cell_*`/`whisker_*` primitives: each
