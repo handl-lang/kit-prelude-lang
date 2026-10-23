@@ -390,6 +390,15 @@
   child_shape:
     node_kind: forall
     arity: 2
+    # Per-child right binding powers (ADR-0053): the body parses at rbp 6
+    # so `x : forall n : Nat, T := v` keeps the assign *outside* the
+    # forall — at rbp 0 the body would greedily capture the `:=`/`=`/`::`
+    # (lbp 5) and `forall` could never annotate a definition. `~>` (10)
+    # and `:` (12) still bind inside the body; the binder child parses at
+    # rbp 0 (the `,` separator bounds it regardless).
+    child_binding_powers:
+      - 0
+      - 6
     child_separators:
       - !Required token.comma
 # NOTE — `name{a, b, …}` implicit index binders / `F{i, …}` index
