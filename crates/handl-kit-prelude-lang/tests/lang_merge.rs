@@ -18,8 +18,8 @@ fn types_yaml_loads() {
     // (ADR-0120 Phase 2) + `type.family`/`type.data`/`type.loop`
     // (ADR-0120 Phase 4 dependent structure).
     // +3 `type.cell_id`/`type.cell_comp_v`/`type.cell_comp_h` (ADR-0120
-    // globular cell algebra).
-    assert_eq!(lang.types.len(), 85);
+    // globular cell algebra) + `type.index_app` (phase-2 WS-C).
+    assert_eq!(lang.types.len(), 86);
     // The `value` kind (literals) must have a rule.
     assert!(lang.types.get_by_identity("value").is_some());
     // Spot-check a few meaningful rules.

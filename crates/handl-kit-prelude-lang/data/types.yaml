@@ -3099,14 +3099,17 @@
     lit: type.unknown
 
 # `handle` — install a handler for the duration of the target expression.
-# `handle <expr> with <handler>`: returns the type of `target` (child 0).
+# `handle <expr> with <handler>` (phase-2 WS-F): `synth_handle` checks the
+# handler's declared op coverage against the body's `IO(S)` op set —
+# covered entries are replaced by the impl's declared return type,
+# uncovered stay `IO` ops (the interpret-in-place residual `IO(S')`).
+# A non-IO body passes its type through unchanged.
 - id: type.handle
   node_kind: handle
   synth: !Op
-    name: synth_child
+    name: synth_handle
     args: []
     source: Judgment
-    lit: 0
 # ---------------------------------------------------------------------------
 # Cell/cubical theory surface forms (Term frontier)
 # ---------------------------------------------------------------------------
