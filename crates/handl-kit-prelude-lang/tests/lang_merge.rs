@@ -17,7 +17,9 @@ fn types_yaml_loads() {
     // +13 Term frontier type rules + 1 transport rule + 1 axis_flow rule
     // (ADR-0120 Phase 2) + `type.family`/`type.data`/`type.loop`
     // (ADR-0120 Phase 4 dependent structure).
-    assert_eq!(lang.types.len(), 82);
+    // +3 `type.cell_id`/`type.cell_comp_v`/`type.cell_comp_h` (ADR-0120
+    // globular cell algebra).
+    assert_eq!(lang.types.len(), 85);
     // The `value` kind (literals) must have a rule.
     assert!(lang.types.get_by_identity("value").is_some());
     // Spot-check a few meaningful rules.
@@ -42,7 +44,8 @@ fn transforms_yaml_loads_first_class_rules() {
     // application `f(X)` by re-tagging the node as a `call`).
     // + 1 `meta-transform` placeholder for N-dimensional arrows.
     // + 1 `n_dim_opt` flow rule.
-    assert_eq!(lang.transforms.len(), 11);
+    // +1 exec-erasure pass — type-annot erases to subject (ADR-0154 §6).
+    assert_eq!(lang.transforms.len(), 12);
     assert_eq!(
         lang.transforms_for("desugar", "do-while")[0].id,
         "transform.desugar.do_while"
