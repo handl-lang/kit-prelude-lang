@@ -156,6 +156,10 @@
   label: for
   category: keyword
   doc: "**For loop — iterate over a collection** `for`\n\n```\nfor `x` in `coll` { `body` }\n```"
+- id: token.keyword.forall
+  label: forall
+  category: keyword
+  doc: "**Universal index quantifier — `Pi` shorthand** `forall`\n\n```\nforall `n` : `Nat`, `T`   ==   Pi(`Nat`, `n` ~> `T`)\n```"
 - id: token.keyword.from
   label: from
   category: keyword

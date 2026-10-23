@@ -370,6 +370,34 @@
       - callee
       - args
     type: object
+# `index_app` — index-argument application `F{i, j, …}` (phase-2 WS-C
+# surface sugar). The canonical surface writes the braces **adjacent** to a
+# name-like target (`Vec{n, a}`, `head{n, a}`) so they are distinguishable
+# from block/object `{` openers (`match v { … }`); see the Pratt engine's
+# `index_app_applies`. Child roles: the `callee` expression, then one or
+# more `args` — index terms or type expressions (whitespace inside the
+# braces is application: `Vec{Succ n, a}` carries `call(Succ, n)` as arg 0).
+# In annotation position it elaborates like a `call` former application
+# (`type.family_app`); on an `assign`/`type-annot` subject the args are
+# *implicit index binders* (`head{n, a} : T` wraps `T` in implicit `Pi`s —
+# erased at runtime, same class as index arguments today).
+- id: ast.index_app
+  node_kind: index_app
+  children:
+    - role: callee
+    - role: args
+      variadic: true
+  payload_schema:
+    properties:
+      children:
+        items:
+          type: integer
+        minItems: 2
+        type: array
+    required:
+      - children
+    type: object
+
 # `dimension` — dimension specialization `f<...>` (ADR-0106 §11).
 #
 # The canonical surface writes the specialization brackets adjacent to a

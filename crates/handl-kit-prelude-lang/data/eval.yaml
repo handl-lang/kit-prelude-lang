@@ -365,6 +365,45 @@
             args: []
             source: Native
 #
+# `index_app` — `F{i, …}` in a runnable position is ordinary application
+# of the target to the brace arguments (same scheme as `eval.call` /
+# `eval.dimension`; children are laid out identically — [target, args…]).
+# In practice the form lives in annotation position, where exec erasure
+# (`eval.type-annot` projects the subject) keeps it out of the runtime —
+# this scheme only keeps a leaked `index_app` node honest.
+- id: eval.index_app
+  node_kind: index_app
+  scheme: !Seq
+    fst: !Seq
+      fst: !Op
+        name: proj_child
+        args: []
+        source: Native
+        lit: 0
+      snd: !Op
+        name: route_on_type
+        args: []
+        source: Native
+        lit: string
+    snd: !Choice
+      l: !Op
+        name: call_host
+        args:
+          - !Op
+            name: proj_rest
+            args: []
+            source: Native
+        source: DynamicForeign
+      r: !App
+        callee: !Op
+          name: id
+          args: []
+          source: Native
+        args:
+          - !Op
+            name: proj_rest
+            args: []
+            source: Native
 # A dimension evaluates as **application of its target to the dimension
 # arguments**: `f<X>` means `f(X)`, with the children laid out exactly like a
 # `call` ([target, args...]). This is the reading ADR-0106 §12 gives the

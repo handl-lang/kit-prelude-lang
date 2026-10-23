@@ -376,6 +376,32 @@
           - token.string
         field: alias
         requires_prev_match: true
+# `forall n : Nat, T` — `Pi` shorthand (phase-2 WS-C sugar). Two children:
+# [binder, body] — `binder` is `type-annot(var, A)` (or a bare `var` for an
+# unsorted binder), `body` the type expression after the required `,`.
+# The typechecker's `dep_synth_type` mints the same `type.pi` value that
+# `Pi(A, n ~> T)` produces — a parse-level alias, no new semantics.
+- id: grammar.forall.prefix
+  token: token.keyword.forall
+  position: Prefix
+  binding_power:
+    - 0
+    - 0
+  child_shape:
+    node_kind: forall
+    arity: 2
+    child_separators:
+      - !Required token.comma
+# NOTE — `name{a, b, …}` implicit index binders / `F{i, …}` index
+# application (phase-2 WS-C sugar): like `f<…>` (dimension), `{` cannot be
+# a declarative infix row — it collides with every block/delimited opener
+# (`match v { … }`, `if c { … }`, object literals). The Pratt engine
+# therefore handles it as a *special production* (`index_app_applies`):
+# it fires only when the `{` is written **adjacent** to a name-like left
+# operand (`Vec{n, a}` — never `v { arms }`), producing an `index_app`
+# node `[target, args…]`; whitespace inside the braces is application
+# (`Vec{Succ n, a}` ⇒ `index_app(Vec, call(Succ, n), a)`). See
+# `ast.index_app` in ast.yaml.
 # `match` supports an optional `return ... with` motive clause and produces a
 # `match` node with 2 or 3 children: [scrutinee, (motive,) arms]. Surface forms:
 #   match scrutinee { arms }
