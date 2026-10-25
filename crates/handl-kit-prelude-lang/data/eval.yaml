@@ -381,6 +381,18 @@
     args: []
     source: Native
     lit: 0
+# `instance` — instance declaration (phase-3 WS-A). The dictionary IS
+# the runtime-relevant data (evidence args are the "kept implicit"
+# erasure class — not erased like type indices), so the scheme
+# evaluates and returns the `dict` child; the `constraint` child is a
+# type expression and is never evaluated.
+- id: eval.instance
+  node_kind: instance
+  scheme: !Op
+    name: proj_child
+    args: []
+    source: Native
+    lit: 1
 # A dimension evaluates as **application of its target to the dimension
 # arguments**: `f<X>` means `f(X)`, with the children laid out exactly like a
 # `call` ([target, args...]). This is the reading ADR-0106 §12 gives the

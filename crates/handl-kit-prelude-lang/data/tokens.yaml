@@ -197,6 +197,10 @@
   label: in
   category: keyword
   doc: "**Iterator binding — used with `for`** `in`\n\n```\nfor `x` in `coll` { `body` }\n```"
+- id: token.keyword.instance
+  label: instance
+  category: keyword
+  doc: "**Instance declaration — register a dictionary for a constraint former** `instance`\n\n```\ninstance `Eq` `Nat` := `dict`\n```"
 - id: token.keyword.infer
   label: infer
   category: keyword

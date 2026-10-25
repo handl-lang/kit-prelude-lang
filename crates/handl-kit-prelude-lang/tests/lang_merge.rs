@@ -20,8 +20,9 @@ fn types_yaml_loads() {
     // +3 `type.cell_id`/`type.cell_comp_v`/`type.cell_comp_h` (ADR-0120
     // globular cell algebra) + `type.index_app` (phase-2 WS-C) +
     // `type.dimension` (the `<>` index bracket — same synth_call scheme
-    // as `type.index_app`, post `{`→`<` migration).
-    assert_eq!(lang.types.len(), 87);
+    // as `type.index_app`, post `{`→`<` migration) +
+    // `type.instance` (phase-3 WS-A instance declarations).
+    assert_eq!(lang.types.len(), 88);
     // The `value` kind (literals) must have a rule.
     assert!(lang.types.get_by_identity("value").is_some());
     // Spot-check a few meaningful rules.

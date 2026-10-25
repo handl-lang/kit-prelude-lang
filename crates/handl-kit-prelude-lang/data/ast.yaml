@@ -1379,6 +1379,33 @@
       - children
       - name
     type: object
+# `instance` — instance declaration (phase-3 WS-A, ADR-0106 §11).
+# `instance <C(i⃗)> := <dict>` registers `dict` as the dictionary value
+# for the constraint former application `C(i⃗)`. Two named children:
+#   0. `constraint` — the constraint type expression (`Eq Nat`, a
+#      `call`/`index_app`/`var` node elaborating to a
+#      `type.family_app{head, args}`).
+#   1. `dict` — the dictionary value expression (a record literal or
+#      constructor application). The dict is *runtime* data — the
+#      evidence-argument erasure class — so `eval.instance` projects
+#      (evaluates) this child.
+- id: ast.instance
+  node_kind: instance
+  children:
+    - role: constraint
+    - role: dict
+  payload_schema:
+    properties:
+      children:
+        description: positional children [constraint_expr, dict_expr]
+        items:
+          type: integer
+        maxItems: 2
+        minItems: 2
+        type: array
+    required:
+      - children
+    type: object
 # `alt` — constructor alternative node created by `|` pipe infix
 # (ADR-0082). Two children: `left` and `right`. The desugar pass walks
 # the `alt` tree to collect all constructors from a `data` declaration.

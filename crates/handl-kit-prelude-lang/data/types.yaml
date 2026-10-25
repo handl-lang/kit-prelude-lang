@@ -2553,6 +2553,24 @@
     args: []
     source: Judgment
 
+# `instance <C(i⃗)> := <dict>` — instance declaration (phase-3 WS-A,
+# ADR-0106 §11). The `synth_instance` judgment elaborates the constraint
+# child to a `type.family_app{head, index-args}` (unbound index vars
+# implicitly generalize), enforces *coherence* — a second instance for
+# the same head with unifiable index shape is a declaration-time error —
+# checks the dictionary expression, binds it in Γ *at the constraint
+# type* under a generated name (the dict's `type` link IS the declared
+# former application), and registers `(head, args) ↦ dict-name` in the
+# context's instance table. Implicit `type.pi` domains whose head has
+# registered instances resolve by search at call sites (see
+# `synth_call`'s implicit-binder drain). Returns `type.unit`.
+- id: type.instance
+  node_kind: instance
+  synth: !Op
+    name: synth_instance
+    args: []
+    source: Judgment
+
 # ---------------------------------------------------------------------------
 # Graded-theory declarations (ADR-0098/0100)
 # ---------------------------------------------------------------------------

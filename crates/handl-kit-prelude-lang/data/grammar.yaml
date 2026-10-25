@@ -760,6 +760,32 @@
         field: name
     child_separators:
       - !Required token.bind
+# `instance <C(i⃗)> := <dict>` — instance declaration (phase-3 WS-A,
+# ADR-0106 §11): registers `dict` as the dictionary value for the
+# constraint former application `C(i⃗)`. The first child is a type
+# expression parsed at rbp 6 so it stops before the `:=` separator
+# (same trick as `data`'s `::`); the second child is the dictionary
+# value expression. `synth_instance` elaborates the constraint to a
+# `type.family_app{head, args}` — unbound index variables in the
+# constraint implicitly generalize as rigid index vars (`instance
+# Eq (List a)` is the generic-instance shape) — enforces coherence
+# (no two instances may declare unifiable index shapes for one head),
+# checks the dict, and registers `(head, args) ↦ dict` in the
+# context's instance table.
+- id: grammar.instance.prefix
+  token: token.keyword.instance
+  position: Prefix
+  binding_power:
+    - 6
+    - 0
+  child_shape:
+    node_kind: instance
+    arity: 2
+    child_binding_powers:
+      - 6
+      - 0
+    child_separators:
+      - !Required token.colon_equal
 # `type` — v0.1 type namespace (ADR-0074: "type.Str / type.Int / etc.
 # namespace"). `type` is a keyword, but it is used as a namespace identifier
 # in type expressions (`type.number`, `type.bool`, `type.string`, ...). It is

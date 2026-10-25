@@ -312,6 +312,11 @@
   pattern: !Literal
     text: in
   priority: 15
+- id: lex.keyword.instance
+  token_kind: token.keyword.instance
+  pattern: !Literal
+    text: instance
+  priority: 15
 - id: lex.keyword.infer
   token_kind: token.keyword.infer
   pattern: !Literal
