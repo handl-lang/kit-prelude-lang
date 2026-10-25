@@ -365,15 +365,15 @@
             args: []
             source: Native
 #
-# `index_app` — `F{i, …}` carries *implicit index arguments* (phase-2
-# WS-C): the brace terms are type-level indices with no runtime
-# counterpart — `head{n, a}`'s binders are implicit `type.pi`s, which
-# consume no lambda params, so `head{2, Bool}` must evaluate to `head`
-# itself (same erasure class as `eval.type-annot` projecting its
-# subject). Evaluating the callee and dropping the args is also the only
-# honest runtime reading: brace contents are index terms/types (`Succ n`,
-# `Bool`), not values — applying them would bind a type index into a
-# term-level parameter.
+# `index_app` — retired node kind (the `{…}` index-position surface
+# migrated to `<>`; the parser now mints `dimension` for those brackets,
+# and `transform.desugar.dimension` lowers them to `call`). Kept for
+# pre-desugar/hand-built trees: `F{i, …}` carried *implicit index
+# arguments* (phase-2 WS-C) — the brace terms are type-level indices
+# with no runtime counterpart — `head{n, a}`'s binders are implicit
+# `type.pi`s, which consume no lambda params, so `head{2, Bool}`
+# evaluates to `head` itself (same erasure class as `eval.type-annot`
+# projecting its subject).
 - id: eval.index_app
   node_kind: index_app
   scheme: !Op

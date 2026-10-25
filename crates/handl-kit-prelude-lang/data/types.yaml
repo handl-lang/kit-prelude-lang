@@ -2100,16 +2100,69 @@
           source: Judgment
           lit: body
 
-# `index_app` — `F{i, …}` index-argument application (phase-2 WS-C sugar).
+# `index_app` — index-argument application `F<i, …>` (phase-2 WS-C sugar,
+# formerly spelled `F{i, …}` before the `{`→`<` index-position migration).
 # Term-position occurrences behave exactly like `call`: the callee
 # synthesizes a `type.function`/`type.pi`/`type.ctor_sig`/`type.family`
-# chain and each brace argument checks against the current domain — a
+# chain and each bracket argument checks against the current domain — a
 # declared family produces `type.family_app`. In *annotation* position the
 # dependent interpreter (`dep_synth_type`) routes `index_app` through the
 # same `dep_synth_call_type` path; on an `assign`/`type-annot` subject the
 # args are implicit index binders instead (`synth_assign`).
 - id: type.index_app
   node_kind: index_app
+  synth: !Op
+    name: synth_call
+    args: []
+    source: Judgment
+  check: !Seq
+    fst: !Op
+      name: synth_child
+      args: []
+      source: Judgment
+      lit: 0
+    snd: !Seq
+      fst: !Op
+        name: bind
+        args: []
+        source: Judgment
+        lit: funtype
+      snd: !Seq
+        fst: !Op
+          name: check_child
+          args:
+            - !Op
+              name: type_field
+              args:
+                - !Op
+                  name: result
+                  args: []
+                  source: Judgment
+                  lit: funtype
+              source: Judgment
+              lit: param
+          source: Judgment
+          lit: 1
+        snd: !Op
+          name: type_field
+          args:
+            - !Op
+              name: result
+              args: []
+              source: Judgment
+              lit: funtype
+          source: Judgment
+          lit: body
+
+# `dimension` — the `<>` bracket `F<i, …>` the parser now mints for both
+# dimension specialization (ADR-0106 §11) and index application (the
+# retired `{…}` index-position surface — a dimension IS an index). Same
+# scheme as `type.index_app`: term-position occurrences check like a
+# `call`; in annotation position `dep_synth_type` routes it through
+# `dep_synth_call_type`; on an `assign`/`type-annot` subject the args are
+# implicit index binders (`synth_assign`/`implicit_binder_head`).
+- id: type.dimension
+  node_kind: dimension
   synth: !Op
     name: synth_call
     args: []

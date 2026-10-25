@@ -401,16 +401,18 @@
       - 6
     child_separators:
       - !Required token.comma
-# NOTE — `name{a, b, …}` implicit index binders / `F{i, …}` index
-# application (phase-2 WS-C sugar): like `f<…>` (dimension), `{` cannot be
-# a declarative infix row — it collides with every block/delimited opener
-# (`match v { … }`, `if c { … }`, object literals). The Pratt engine
-# therefore handles it as a *special production* (`index_app_applies`):
-# it fires only when the `{` is written **adjacent** to a name-like left
-# operand (`Vec{n, a}` — never `v { arms }`), producing an `index_app`
-# node `[target, args…]`; whitespace inside the braces is application
-# (`Vec{Succ n, a}` ⇒ `index_app(Vec, call(Succ, n), a)`). See
-# `ast.index_app` in ast.yaml.
+# NOTE — index position uses `name<a, b, …>` implicit index binders /
+# `F<i, …>` index application (phase-2 WS-C sugar, migrated `{…}` → `<…>`:
+# a dimension IS an index). `<` cannot be a declarative infix row for this
+# — it is the comparison operator — so the Pratt engine handles the
+# bracket as a *special production* (`dimension_applies`): it fires only
+# when the `<` is written **adjacent** to a name-like left operand and
+# closes at balanced depth (`Vec<n, a>`, `f<d>` — never `a < b`), producing
+# a `dimension` node `[target, args…]`; whitespace inside the brackets is
+# application (`Vec<Succ n, a>` ⇒ `dimension(Vec, call(Succ, n), a)`) and a
+# trailing `:` wraps a sorted binder (`f<a, ev : Eq(a)>`). Record braces
+# stay inside the bracket where a sig index needs them
+# (`IO<{ puts: T }>`). See `ast.dimension`/`ast.index_app` in ast.yaml.
 # `match` supports an optional `return ... with` motive clause and produces a
 # `match` node with 2 or 3 children: [scrutinee, (motive,) arms]. Surface forms:
 #   match scrutinee { arms }
