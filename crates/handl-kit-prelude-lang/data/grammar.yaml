@@ -79,7 +79,7 @@
   position: Infix
   binding_power:
     - 12
-    - 13
+    - 9
   child_shape:
     node_kind: type-annot
     arity: 2
