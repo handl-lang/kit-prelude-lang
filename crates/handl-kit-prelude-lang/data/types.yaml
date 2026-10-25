@@ -15,6 +15,7 @@
 # `make_array`, `synth_last_child`, `check_json_value`, `check_last_child`, `synth_match_arms`,
 # `synth_first_child_or_unknown`, `record_field_type`, `array_element_type`,
 # `synth_object_record`, `check_object_record`, `check_all_children`,
+# `synth_while`,
 # `construct_pi`, `construct_sigma`, `pi_apply`, `unify_pi`, `check_pi_body`,
 # `construct_forall`, `forall_apply`, `unify_forall`,
 # `construct_vau_type`, `vau_apply`, `unify_vau`.
@@ -2061,44 +2062,17 @@
     name: synth_call
     args: []
     source: Judgment
-  check: !Seq
-    fst: !Op
-      name: synth_child
-      args: []
-      source: Judgment
-      lit: 0
-    snd: !Seq
-      fst: !Op
-        name: bind
-        args: []
-        source: Judgment
-        lit: funtype
-      snd: !Seq
-        fst: !Op
-          name: check_child
-          args:
-            - !Op
-              name: type_field
-              args:
-                - !Op
-                  name: result
-                  args: []
-                  source: Judgment
-                  lit: funtype
-              source: Judgment
-              lit: param
-          source: Judgment
-          lit: 1
-        snd: !Op
-          name: type_field
-          args:
-            - !Op
-              name: result
-              args: []
-              source: Judgment
-              lit: funtype
-          source: Judgment
-          lit: body
+  # `check_call` — the same directed check (synth the callee, check the
+  # first argument against its `param`, yield `body`) lifted to a
+  # judgment op so `perform(op, arg)` can intercept: a `perform` call's
+  # op operand is a *name*, not a checkable value — checking it as one
+  # would report the op's bare identifier (`puts`) as unbound. The
+  # judgment defers `perform` calls to `synth_call`'s `synth_perform`
+  # branch and unifies the minted `IO{op: T}` with the expected type.
+  check: !Op
+    name: check_call
+    args: []
+    source: Judgment
 
 # `index_app` — index-argument application `F<i, …>` (phase-2 WS-C sugar,
 # formerly spelled `F{i, …}` before the `{`→`<` index-position migration).
@@ -2449,19 +2423,37 @@
     source: Judgment
     lit: type.unknown
 
-# `while` — the state-passing form `while { state } { closure }` stays a
-# `while` node (the `loop_step` eval protocol handles it) and yields the
-# closure's `{ out: v }` value. Its result type is not knowable from the
-# syntax, so synth the open `type.unknown` — it unifies with whatever the
-# surrounding branches produce. (The `while cond { body }` form desugars
-# to `rec`, ADR-0074 A.1.)
+# `while` — the checker sees the *pre-desugar* AST, so both surface
+# protocols dispatch through `synth_while` (ADR-0074 A.1/A.5):
+#
+#   * `while <state> { <step-closure> }` — the state-passing `loop_step`
+#     form (kept as `while` when child 1 is an arrow — `synth_while`
+#     recognizes it by the `params` child role, the data-driven equivalent
+#     of the desugar's `KindAt{index:1, kind:function}`). The state child
+#     synthesizes; the step closure's params bind to the state's record
+#     fields (a single non-pattern param receives the whole state,
+#     matching `build_loop_step_args`); the body checks against
+#     `type.unknown` — internals (unbound vars, arity, `if` conditions,
+#     match coverage) still report, but the `{state: …}`/`{out: …}`
+#     continue/terminate records on different control-flow paths are never
+#     forced to join. The loop's result is the `{ out: v }` payload, whose
+#     type is not statically recoverable → `type.unknown`.
+#
+#   * `while <cond> { <stmts…> }` — the pre-test form that desugars to
+#     `rec` at eval. The condition synthesizes and unifies with
+#     `type.bool` (mirroring `type.if`), and the body statements check in
+#     a Γ scope that pops on exit (matching `eval_block`'s
+#     `env_push`/`env_pop`): body-local binds do not escape, and
+#     re-assigning an outer name shadows it in Γ for the body's extent —
+#     rebinding discipline across iterations is intentionally not modeled
+#     (the body's internals are checked; the outer binding's type is left
+#     alone). Result: `type.unit`.
 - id: type.while
   node_kind: while
   synth: !Op
-    name: construct
+    name: synth_while
     args: []
     source: Judgment
-    lit: type.unknown
 
 # `for` — iteration, desugars to `rec` (ADR-0074 A.2).
 - id: type.for
