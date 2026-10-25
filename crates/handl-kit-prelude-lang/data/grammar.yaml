@@ -753,39 +753,6 @@
   child_shape:
     node_kind: right
     arity: 1
-# `data Name :: <constructors>` — inductive type declaration (ADR-0082).
-# The `data` keyword is followed by the type name (identifier), optional
-# parenthesised type parameters/indices, `::`, and one child expression: the
-# constructor list. Constructors are separated by `|` (pipe), which creates
-# `alt` nodes. The desugar pass (`desugar_data`) reads the first child to
-# obtain the type name and parameters, then walks the second child (`alt`
-# tree) to extract constructors. Backward-compatible hand-built nodes may
-# still carry the type name in `payload.name` with a single constructor
-# child.
-- id: grammar.data.prefix
-  token: token.keyword.data
-  position: Prefix
-  binding_power:
-    - 6
-    - 0
-  child_shape:
-    node_kind: data
-    arity: 2
-    # Per-child right binding powers (ADR-0053): the type-expression child
-    # parses at rbp 6 so it stops before the separating `::` (bind, lbp 5),
-    # while the constructor list parses at rbp 0 so the low-precedence `|`
-    # infix (lbp 1) still binds into `alt` nodes.
-    child_binding_powers:
-      - 6
-      - 0
-    # The family name is lifted out of the type-expression child into
-    # `payload.name` (`var` payload, `name` property, or `callee`-role child
-    # of a `call` node for `data Name(params...)`).
-    payload_extract:
-      - child: 0
-        field: name
-    child_separators:
-      - !Required token.bind
 # `instance <C(i⃗)> := <dict>` — instance declaration (phase-3 WS-A,
 # ADR-0106 §11): registers `dict` as the dictionary value for the
 # constraint former application `C(i⃗)`. The first child is a type
