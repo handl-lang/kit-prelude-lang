@@ -19,8 +19,6 @@ repository = "https://github.com/handl-lang/kit-prelude-lang"
 #   GIT_CONFIG_VALUE_0="https://github.com/handl-lang/host" \
 #   cargo check --workspace
 
-
-
 [profile.dev]
 opt-level = 1
 
@@ -33,16 +31,6 @@ hnl-engine-transform = { path = "../engine-transform" }
 [patch."https://github.com/handl-lang/kernel"]
 handl-language = { path = "../kernel/crates/handl-language" }
 handl-value = { path = "../kernel/crates/handl-value" }
-handl-lib-bytes = { path = "../kernel/crates/bytes" }
-handl-lib-cmp = { path = "../kernel/crates/cmp" }
-handl-lib-combinators = { path = "../kernel/crates/combinators" }
-handl-lib-error = { path = "../kernel/crates/error" }
-handl-lib-mood = { path = "../kernel/crates/mood" }
-handl-lib-obj = { path = "../kernel/crates/obj" }
-handl-lib-ops = { path = "../kernel/crates/ops" }
-handl-lib-prim = { path = "../kernel/crates/prim" }
-handl-lib-prim-handl = { path = "../kernel/crates/prim-handl" }
-handl-lib-type = { path = "../kernel/crates/type" }
 
 [patch."https://github.com/handl-lang/host"]
 handl-plugin-ext-diag = { path = "../host/crates/plugin-ext-diag" }
