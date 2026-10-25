@@ -531,6 +531,24 @@
     required:
       - children
     type: object
+# `exists` — `Sigma` shorthand sugar, the `forall` node's existential twin:
+# children are [binder, body] — `binder` is `type-annot(var, A)` (or a bare
+# `var` for an unsorted binder), `body` the type expression after the `,`.
+# `dep_synth_type` mints the same `type.sigma` value `Sigma(A, m ~> T)`
+# produces — a parse-level alias, no new semantics.
+- id: ast.exists
+  node_kind: exists
+  payload_schema:
+    properties:
+      children:
+        items:
+          type: integer
+        maxItems: 2
+        minItems: 2
+        type: array
+    required:
+      - children
+    type: object
 # `pi` — dependent function type `Π (x: A) → B(x)` (ADR-0120 Phase 4).
 # Internal type-level shape: children are [param-type, body-type]; the
 # surface former is `Pi(A, x ~> B)` (a call).
@@ -1121,12 +1139,17 @@
   children:
     - role: target
     - role: impl
+    # ADR-0158 `acc` clause: `handle f with h acc s0` — the optional
+    # trailing accumulator seed evaluated by the `handle`/`handle_dyn`
+    # dynamic extent.
+    - role: acc
+      optional: true
   payload_schema:
     properties:
       children:
         items:
           type: integer
-        maxItems: 2
+        maxItems: 3
         minItems: 2
         type: array
       name:

@@ -137,6 +137,10 @@
 - id: token.keyword.data
   label: data
   category: keyword
+- id: token.keyword.acc
+  label: acc
+  category: keyword
+  doc: "**Handler accumulator clause** `acc`\n\n```\nhandle `f` with `h` acc `s0`\n```"
 - id: token.keyword.do
   label: do
   category: keyword
@@ -148,6 +152,10 @@
 - id: token.keyword.export
   label: export
   category: keyword
+- id: token.keyword.exists
+  label: exists
+  category: keyword
+  doc: "**Existential index quantifier — `Sigma` shorthand** `exists`\n\n```\nexists `m` : `Nat`, `T`   ==   Sigma(`Nat`, `m` ~> `T`)\n```"
 - id: token.keyword.first
   label: first
   category: keyword

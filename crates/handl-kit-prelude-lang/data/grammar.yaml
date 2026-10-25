@@ -401,6 +401,25 @@
       - 6
     child_separators:
       - !Required token.comma
+# `exists m : Nat, T` — `Sigma` shorthand, the `forall` pair's existential
+# twin. Same two children [binder, body] and the same rbp-6 body split so
+# `x : exists m : Nat, T := v` keeps the assign outside the quantifier.
+# The typechecker's `dep_synth_type` mints the same `type.sigma` value that
+# `Sigma(A, m ~> T)` produces — a parse-level alias, no new semantics.
+- id: grammar.exists.prefix
+  token: token.keyword.exists
+  position: Prefix
+  binding_power:
+    - 0
+    - 0
+  child_shape:
+    node_kind: exists
+    arity: 2
+    child_binding_powers:
+      - 0
+      - 6
+    child_separators:
+      - !Required token.comma
 # NOTE — index position uses `name<a, b, …>` implicit index binders /
 # `F<i, …>` index application (phase-2 WS-C sugar, migrated `{…}` → `<…>`:
 # a dimension IS an index). `<` cannot be a declarative infix row for this
@@ -629,12 +648,19 @@
     - 0
   child_shape:
     node_kind: handle
-    arity: 2
+    arity: 3
     child_binding_powers:
       - 0
       - 0
+      - 0
+    # ADR-0158: `acc <expr>` is an optional trailing clause — like `if`'s
+    # `else`, the `acc` keyword is the disambiguator, so it is never
+    # swallowed as a following expression.
+    optional_children:
+      - 2
     child_separators:
       - !Required token.keyword.with
+      - !Required token.keyword.acc
     payload_extract:
       - child: 0
         field: name
