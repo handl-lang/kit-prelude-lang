@@ -17,3 +17,13 @@ composes this crate and layers them on top to produce the full canonical
 Sibling-repo deps are git dependencies (`branch = "main"`); the `[patch]`
 tables in the workspace `Cargo.toml` resolve them from sibling checkouts
 for local development.
+
+## Documentation
+
+Published site (Diátaxis): <https://handl-lang.github.io/docs/kit-prelude-lang/>
+
+- [Reference](https://handl-lang.github.io/docs/kit-prelude-lang/reference/) — public API surface
+- [How-to](https://handl-lang.github.io/docs/kit-prelude-lang/how-to/) — task recipes
+- [Explanation](https://handl-lang.github.io/docs/kit-prelude-lang/explanation/) — design and rationale
+
+Decision records live on the `project` branch under `project/adrs/`.
