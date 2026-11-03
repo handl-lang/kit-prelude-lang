@@ -18,6 +18,33 @@
 #   when:     !KindAt { index?, role?, kind } | !PayloadEq { path, value }
 #             | !ChildCount <n> | !And […] | !Or […] | !Not <cond>
 
+# `exists m : S, T` — `Sigma` surface sugar (`forall`'s existential twin).
+# On the exec path the sugar lowers to the former call it stands for —
+# `Sigma(S, m ~> T)` — so no `exists` node ever reaches a runnable
+# artifact (the `artifact.type-level-node` lint would flag it: `exists`
+# owns a `lang.types` rule but no `eval` scheme, exactly like `forall`).
+# The checker sees the raw `exists` node (dep_synth_type mints the same
+# `type.sigma`); this rule covers eval. Sorted binders only (`exists m,
+# T` with a bare `var` has no param type to hand `Sigma` — left alone).
+- id: transform.desugar.exists
+  pass: desugar
+  node_kind: exists
+  when: !KindAt
+    index: 0
+    kind: type-annot
+  rule: !Declarative
+    target_kind: call
+    children:
+      - !Create { kind: var, payload: "Sigma" }
+      # the binder's sort `S` — annot child of `type-annot(var m, S)`
+      - !KeepPath [0, 1]
+      # `m ~> T` — subject child of the binder is the binder name
+      - !Create
+        kind: function
+        children:
+          - !KeepPath [0, 0]
+          - !Keep 1
+
 # `dimension` — `f<X, Y>` lowers to the application `f(X, Y)` (ADR-0106
 # §11/§12). A dimension node's children are already `[target, args...]`,
 # exactly a `call`'s, so the rewrite is a re-tagging: the proven `call`

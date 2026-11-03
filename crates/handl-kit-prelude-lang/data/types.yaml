@@ -2031,6 +2031,25 @@
     source: Judgment
     lit: x
 
+# `exists` — the `exists m : S, T` keyword sugar in *term* position (the
+# annotation path goes through `dep_synth_type`, which mints the same
+# `type.sigma{param, body_closure}` `Sigma(S, m ~> T)` produces). Children
+# are [binder, body] like `forall`; `construct_sigma` stores child 1's
+# arena index in a `body_closure` marker — the body is NOT evaluated
+# eagerly (ADR-0054 closure machinery).
+- id: type.exists
+  node_kind: exists
+  synth: !Op
+    name: construct_sigma
+    args:
+      - !Op
+        name: synth_child
+        args: []
+        source: Judgment
+        lit: 0
+    source: Judgment
+    lit: x
+
 # `family` — an indexed family `A ↝ Type` (ADR-0120 Phase 4). The single
 # child is the index/base type expression; `construct_family` synths it
 # and mints `type.family{base}`. The surface form is `Family(A)` (a call

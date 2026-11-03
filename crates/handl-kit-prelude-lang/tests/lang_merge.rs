@@ -21,8 +21,10 @@ fn types_yaml_loads() {
     // globular cell algebra) + `type.index_app` (phase-2 WS-C) +
     // `type.dimension` (the `<>` index bracket — same synth_call scheme
     // as `type.index_app`, post `{`→`<` migration) +
-    // `type.instance` (phase-3 WS-A instance declarations).
-    assert_eq!(lang.types.len(), 88);
+    // `type.instance` (phase-3 WS-A instance declarations) +
+    // `type.exists` (the `exists m : S, T` `Sigma`-shorthand keyword —
+    // `forall`'s existential twin).
+    assert_eq!(lang.types.len(), 89);
     // The `value` kind (literals) must have a rule.
     assert!(lang.types.get_by_identity("value").is_some());
     // Spot-check a few meaningful rules.
@@ -48,7 +50,9 @@ fn transforms_yaml_loads_first_class_rules() {
     // + 1 `meta-transform` placeholder for N-dimensional arrows.
     // + 1 `n_dim_opt` flow rule.
     // +1 exec-erasure pass — type-annot erases to subject (ADR-0154 §6).
-    assert_eq!(lang.transforms.len(), 12);
+    // +1 `desugar.exists` — `exists m : S, T` lowers to `Sigma(S, m ~> T)`
+    // on the exec path.
+    assert_eq!(lang.transforms.len(), 13);
     assert_eq!(
         lang.transforms_for("desugar", "do-while")[0].id,
         "transform.desugar.do_while"
